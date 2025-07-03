@@ -3,8 +3,10 @@ package com.example.data.network.request
 import android.util.Log
 import com.example.business.ApiResponse
 import com.example.business.model.LoginResponse
+import com.example.business.model.SignUpResponse
 import com.example.business.model.User
 import com.example.data.ServerIp
+import com.example.data.dataStore.UserData
 import com.example.data.session.SessionManager
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -16,10 +18,15 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
 
-class UserNetworkRequest(private val client: HttpClient, val sessionManager: SessionManager) {
+class UserNetworkRequest(
+    private val client: HttpClient,
+    val sessionManager: SessionManager,
+    val userData: UserData
+) {
 
     suspend fun login(email: String, password: String): ApiResponse<LoginResponse> {
         try {
@@ -29,9 +36,6 @@ class UserNetworkRequest(private val client: HttpClient, val sessionManager: Ses
             }
 
             Log.v("tag", response.toString())
-
-
-
 
 
             if (response.status.value.toString() == "200") {
@@ -58,8 +62,8 @@ class UserNetworkRequest(private val client: HttpClient, val sessionManager: Ses
             }
 
             if (response.status.value == 200) {
-                val user = response.body<com.example.data.network.request.User>()
-
+                val user = response.body() as com.example.data.network.request.User
+                userData.saveUser(user.name, user.email)
                 return ApiResponse.Success(user.toUser())
 
             }
@@ -67,6 +71,34 @@ class UserNetworkRequest(private val client: HttpClient, val sessionManager: Ses
         } catch (e: Exception) {
             return ApiResponse.Error(e.message.toString())
         }
+    }
+
+    suspend fun signUp(name: String, email: String, password: String): ApiResponse<SignUpResponse> {
+        val response = client.post(
+            "http://${ServerIp}:5000/api/auth/signup"
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(SignUpRequest(name, email, password))
+        }
+
+        if (response.status.value == 201) {
+            val castedResponse = response.body() as SignUpResponseJson
+            sessionManager.addAuthToken(castedResponse.data.token)
+            delay(1000)
+            isLogin()
+
+            return ApiResponse.Success(
+                SignUpResponse(
+                    castedResponse.statusCode,
+                    com.example.business.model.SignUpResponseData(castedResponse.data.token),
+                    castedResponse.message,
+                    castedResponse.success
+                )
+            )
+        } else {
+            return ApiResponse.Error((response.body() as SignUpError).message)
+        }
+
     }
 
 
@@ -88,13 +120,13 @@ data class User(
 @Serializable
 data class SignUpResponseJson(
     val statusCode: String,
-    val data: Data,
+    val data: SignUpResponseData,
     val message: String,
     val success: Boolean
 )
 
 @Serializable
-data class Data(
+data class SignUpResponseData(
     val token: String,
 )
 
@@ -127,3 +159,6 @@ data class LoginRequest(
 
 @Serializable
 data class LoginError(val message: String)
+
+@Serializable
+data class SignUpError(val message: String)

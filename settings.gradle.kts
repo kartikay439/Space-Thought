@@ -29,3 +29,4 @@ rootProject.name = "Space"
 include(":app")
 include(":data")
 include(":business")
+include(":infrastructure")

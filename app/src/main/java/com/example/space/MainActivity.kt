@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.business.usecase.IsLoginUseCase
+import com.example.data.dataStore.UserData
 import com.example.data.session.SessionManager
 import com.example.space.screens.AppMainNavigation
 import com.example.space.screens.bottomNavigation.BottomNavigationBarExample
@@ -75,11 +77,11 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             SpaceTheme {
                 val systemUiController = rememberSystemUiController()
-                val systemNAvBarColour =Color.Transparent
+                val systemNAvBarColour = Color.Transparent
 
                 LaunchedEffect(Unit) {
                     systemUiController.setNavigationBarColor(
-                            color = systemNAvBarColour
+                        color = systemNAvBarColour
                     )
                 }
 
@@ -91,25 +93,20 @@ class MainActivity : ComponentActivity() {
                     ,
                     contentAlignment = Alignment.Center
                 ) {
-                    val sessionManager : SessionManager by inject()
+                    val sessionManager: SessionManager by inject()
 
                     Box(
-                        Modifier.fillMaxSize().align(Alignment.Center).padding(bottom = 50.dp)
-                    ){
+                        Modifier
+                            .fillMaxSize()
+                            .align(Alignment.Center)
+//                            .padding(bottom = 50.dp)
+                    ) {
                         AppMainNavigation(
                             navController,
                             sessionManager = sessionManager
                         )
                     }
-                    Box(
-                        Modifier.align(Alignment.BottomCenter)
-                    ){
-                        BottomNavigationBarExample(navController)
 
-                    }
-                    Box(Modifier.align(Alignment.TopCenter)){
-                        TopBar()
-                    }
 
                 }
             }

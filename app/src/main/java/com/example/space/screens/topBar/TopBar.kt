@@ -46,7 +46,7 @@ fun TopBar(){
     Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp)
+                .height(100.dp)
 
 
 

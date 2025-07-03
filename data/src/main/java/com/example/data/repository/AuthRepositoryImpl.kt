@@ -2,6 +2,7 @@ package com.example.data.repository
 
 import com.example.business.ApiResponse
 import com.example.business.model.LoginResponse
+import com.example.business.model.SignUpResponse
 import com.example.business.model.User
 import com.example.business.repository.AuthRepository
 import com.example.data.network.request.UserNetworkRequest
@@ -15,8 +16,8 @@ class AuthRepositoryImpl(val userNetworkRequest: UserNetworkRequest):AuthReposit
        return userNetworkRequest.isLogin()
     }
 
-    override suspend fun signup(name: String, email: String, password: String) {
-        TODO("Not yet implemented")
+    override suspend fun signup(name: String, email: String, password: String):ApiResponse<SignUpResponse>{
+        return userNetworkRequest.signUp(name,email,password)
     }
 
 }

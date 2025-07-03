@@ -10,6 +10,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -25,12 +26,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.dotlottie.dlplayer.Mode
+import com.example.business.ApiResponse
+import com.example.business.model.PostIdeaResponse
 import com.example.data.session.SessionManager
 import com.example.space.R
+import com.example.space.screens.PostScreen
 import com.example.space.screens.topBar.TopBar
+import com.lottiefiles.dotlottie.core.compose.ui.DotLottieAnimation
+import com.lottiefiles.dotlottie.core.util.DotLottieSource
 import kotlinx.coroutines.*
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
@@ -42,15 +52,36 @@ const val SERVER_URL = "http://192.168.8.221:5000/api/post/upload"
 val font = FontFamily(Font(R.font.rocknrollone))
 
 @Composable
-fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel = koinViewModel()) {
-    val context = LocalContext.current
+fun UploadIdea(
+    sessionManager: SessionManager,
+    navController: NavController,
+    uploadViewModel: UploadViewModel = koinViewModel()
+) {
     var selectedImages by remember { mutableStateOf<Uri?>(null) }
     var thoughts by remember { mutableStateOf("") }
     var isUploading by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val token = remember { mutableStateOf(sessionManager.getAuthToken()) }
 
+    val state = uploadViewModel.response.collectAsState()
+    val context = LocalContext.current
 
+    LaunchedEffect(state.value) {
+        when (state.value) {
+            is ApiResponse.Success<PostIdeaResponse> -> {
+                Toast.makeText(context, "uploaded successfully", Toast.LENGTH_SHORT).show()
+                navController.navigate(PostScreen)
+            }
+
+            is ApiResponse.Error -> {
+                Toast.makeText(context, "not uploaded retry", Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponse.Loading -> {
+
+            }
+        }
+    }
 
 
     val pickMultiMedia = rememberLauncherForActivityResult(
@@ -70,10 +101,12 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
         return file
     }
 
+
+
     Column(
         modifier = Modifier
 //            .background(Color(0xFF2E2538))
-            .height(650.dp),
+            .height(900.dp),
 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,6 +117,7 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 100.dp)
                 .padding(15.dp)
                 .height(400.dp)
                 .shadow(15.dp, RoundedCornerShape(12.dp), ambientColor = Color(0xFFC1D8C3)),
@@ -131,15 +165,15 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
                 Button(
                     onClick = { pickMultiMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                     modifier = Modifier.width(150.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor =Color(0x2A2196F3))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x2A2196F3))
                 ) {
                     Text(
-                        "Pick Image",style = TextStyle(
+                        "Pick Image", style = TextStyle(
                             fontFamily = font,
                             color = Color.Black,
                             fontSize = 14.sp,
 
-                        )
+                            )
                     )
                 }
 
@@ -180,11 +214,7 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
                                 isUploading = true
                                 try {
                                     uploadViewModel.uploadIdea(thoughts, file)
-                                    Toast.makeText(
-                                        context,
-                                        "✅ Upload Successful!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+
                                 } catch (e: Exception) {
                                     Toast.makeText(
                                         context,
@@ -202,7 +232,7 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
                     },
                     modifier = Modifier.width(150.dp),
                     enabled = !isUploading,
-                    colors = ButtonDefaults.buttonColors(containerColor =Color(0x2A2196F3))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x2A2196F3))
                 ) {
                     if (isUploading) {
                         CircularProgressIndicator(
@@ -223,31 +253,39 @@ fun UploadIdea(sessionManager: SessionManager, uploadViewModel: UploadViewModel 
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PatternSurface() {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(150.dp)
-            .padding(16.dp),
-        color = Color.Transparent, // Background color
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val dotSpacing = 25.dp.toPx()
-            val dotRadius = 5.dp.toPx()
-
-            for (x in 0..size.width.toInt() step dotSpacing.toInt()) {
-                for (y in 0..size.height.toInt() step dotSpacing.toInt()) {
-                    drawCircle(
-                        color = Color(0xFF6200EA),
-                        radius = dotRadius,
-                        center = androidx.compose.ui.geometry.Offset(x.toFloat(), y.toFloat())
-                    )
-                }
-            }
+        Box(
+            modifier = Modifier.height(500.dp)
+        ) {
+            DotLottieAnimation(
+                source = DotLottieSource.Url("https://lottie.host/c454bf66-cf50-460c-853c-1cdbb5f20e79/uYCFZGfStt.lottie"),
+                autoplay = true,
+                loop = true,
+                speed = 3f,
+                useFrameInterpolation = false,
+                playMode = Mode.FORWARD,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(Color.Transparent)
+                    .size(400.dp)
+                    .padding(top = 50.dp)
+            )
+            Text(
+                "Space is the vast, seemingly infinite expanse that exists beyond Earth and its" +
+                        " atmosphere, where all celestial bodies—including stars, planets, galaxies," +
+                        " and cosmic radiation—exist. It has no air, no gravity " +
+                        "as we know it on Earth, and no boundaries.",
+                style = TextStyle(
+                    fontWeight = FontWeight(400),
+                    fontSize = 16.sp,
+                    color = Color(0xF708365B)
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(25.dp)
+                    .fillMaxSize()
+            )
         }
+
     }
 }

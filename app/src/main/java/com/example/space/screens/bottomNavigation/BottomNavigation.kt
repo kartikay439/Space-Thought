@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.business.usecase.GetAllPostUseCase
 import com.example.space.screens.HomeScreen
-import com.example.space.screens.LoginScreen
+import com.example.space.screens.LoginScreen_UserScreen
 import com.example.space.screens.PostScreen
 import com.example.space.screens.UploadIdea
 import com.example.space.screens.allPost.AllPostScreen
@@ -59,7 +59,7 @@ fun BottomNavigationBarExample(navController: NavController) {
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().background(Color(0x112196F3)),
+            modifier = Modifier.fillMaxSize().background(Color(0xF32196F3)),
             verticalArrangement = Arrangement.Bottom
         ) {
             Row(
@@ -93,7 +93,7 @@ fun NavButton(navController: NavController?, text: String) {
         modifier = Modifier
             .width(80.dp + x.value)
             .height(40.dp + x.value)
-            .background(Color(0x2A2196F3), RoundedCornerShape(10.dp))
+            .background(Color(0x5E2196F3), RoundedCornerShape(10.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() }, // Remove ripple
                 indication = null // Disable default animation
@@ -107,7 +107,7 @@ fun NavButton(navController: NavController?, text: String) {
                     when (text) {
                         "NEW" -> navController?.navigate(UploadIdea)
                         "IDEAS" -> navController?.navigate(PostScreen)
-                        "ME" -> navController?.navigate(LoginScreen)
+                        "ME" -> navController?.navigate(LoginScreen_UserScreen)
                     }
                 }
             },

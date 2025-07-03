@@ -47,6 +47,9 @@ dependencies {
     // OkHttp Logging Interceptor (for debugging API calls)
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+
 
     api(libs.ktor.client.core)
     implementation("io.ktor:ktor-client-okhttp:2.3.6")
@@ -81,6 +84,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.datastore.core.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

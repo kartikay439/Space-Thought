@@ -1,6 +1,7 @@
 package com.example.space.screens.auth.signup
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,30 +9,34 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.business.ApiResponse
+import com.example.business.model.SignUpResponse
 import com.example.data.session.SessionManager
 import com.example.space.R
+import com.example.space.screens.LoginScreen_UserScreen
 import com.example.space.screens.auth.components.InputField
 import com.example.space.screens.auth.components.SubmitButtonAuth
-import com.example.space.screens.auth.login.LoginScreenViewModel
+import com.example.space.screens.userScreen.UserScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignUpScreen(
-    sessionManager: SessionManager,
+    isLoginState: MutableState<Boolean>,
     navController: NavHostController,
-    loginScreenViewModel: LoginScreenViewModel = koinViewModel()
+    signUpScreenViewModel: SignUpScreenViewModel = koinViewModel()
 ) {
     val email = remember { mutableStateOf("") }
     val name = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    val state = loginScreenViewModel.response_.collectAsState()
+    val state = signUpScreenViewModel.response_.collectAsState()
 
     val coroutineScope = rememberCoroutineScope() // Use this to launch coroutines
     Column(
@@ -69,7 +74,7 @@ fun SignUpScreen(
                 InputField(email, "Email", false)
                 InputField(password, "Password", true)
                 SubmitButtonAuth("SignUp", coroutineScope) {
-                    loginScreenViewModel.login(email.value, password.value)
+                    signUpScreenViewModel.signUp(name.value, email.value, password.value)
 //                    sessionManager.addAuthToken(state.value.token)
                 }
                 Text(state.value.toString())
@@ -81,6 +86,34 @@ fun SignUpScreen(
             contentDescription = "logo",
             modifier = Modifier.size(50.dp)
         )
+        val context = LocalContext.current
+        LaunchedEffect(state.value) {
+            when (state.value) {
+                is ApiResponse.Loading -> {
+
+                }
+
+                is ApiResponse.Success -> {
+                    Toast.makeText(
+                        context,
+                        (state.value as ApiResponse.Success<SignUpResponse>).data.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    isLoginState.value = true
+                    navController.navigate(LoginScreen_UserScreen)
+                }
+
+                else -> {
+                    Toast.makeText(
+                        context,
+                        (state.value as ApiResponse.Error).message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+            }
+        }
+
 
     }
 }

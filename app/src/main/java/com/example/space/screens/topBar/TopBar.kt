@@ -71,7 +71,7 @@ fun TopBar(){
                 playMode = Mode.FORWARD,
                 modifier = Modifier
                     .background(Color.Transparent)
-                              .size(50.dp)
+                              .size(45.dp)
             )
             Text(
                 "SHARE THOUGHT",

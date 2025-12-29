@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Space</string>
+    <string name="default_web_client_id">645178988874-cls4g0fo4i63539mmqn74smo37b85m3g.apps.googleusercontent.com</string>
+
 </resources>

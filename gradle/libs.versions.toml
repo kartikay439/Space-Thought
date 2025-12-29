@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.2"
+agp = "8.13.2"
 coilCompose = "2.5.0"
 koinAndroid = "4.0.3"
 kotlin = "2.0.0"
@@ -20,6 +20,9 @@ material = "1.10.0"
 navigationCompose = "2.8.9"
 securityCryptoKtx = "1.0.0"
 datastoreCoreAndroid = "1.1.7"
+googleid = "1.1.1"
+paging = "3.3.0" # Check for the latest stable version
+pagingCompose = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +51,10 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

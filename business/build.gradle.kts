@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.business"
+    namespace = "com.kartikay.business"
     compileSdk = 35
 
     defaultConfig {
@@ -40,4 +40,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // The core paging library (Required for PagingSource)
+    api("androidx.paging:paging-runtime:3.3.0")
+
+    // The Compose integration (Required for collectAsLazyPagingItems)
+    api("androidx.paging:paging-compose:3.3.0")
 }

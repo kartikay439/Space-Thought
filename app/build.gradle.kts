@@ -5,15 +5,15 @@ plugins {
 
     kotlin("plugin.serialization") version "1.9.22" // Adjust according to your Kotlin version
 
-
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.space"
+    namespace = "com.kartikay.space"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.space"
+        applicationId = "com.kartikay.space"
         minSdk = 31
         targetSdk = 35
         versionCode = 1
@@ -51,11 +51,27 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
+
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
 
     //System Navigation Bar
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth")
+
+    // Also add the dependencies for the Credential Manager libraries and specify their versions
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
 
 
 
@@ -72,6 +88,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -81,4 +98,5 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.data"
+    namespace = "com.kartikay.data"
     compileSdk = 35
 
     defaultConfig {
@@ -85,6 +85,13 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.datastore.core.android)
+
+    // The core paging library (Required for PagingSource)
+    api("androidx.paging:paging-runtime:3.3.0")
+
+    // The Compose integration (Required for collectAsLazyPagingItems)
+    api("androidx.paging:paging-compose:3.3.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
